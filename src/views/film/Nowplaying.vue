@@ -3,15 +3,26 @@
       <ul>
           <li v-for="data in datalist" :key="data.filmId" @click="handleClick(data.filmId)">
             <img :src="data.poster" alt="">
-              <h3>{{data.name}}</h3>
-
+            <h3>{{data.name}}</h3>
+            <p>主演：{{data.actors | actorFilter}}</p>
+            <p>
+              {{data.nation}} | {{data.runtime}}分钟
+            </p>
           </li>
       </ul>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import http from '@/util/http' // @ 指向src的据对路径
+import Vue from 'vue'
+Vue.filter('actorFilter', (actors) => {
+  // console.log(actors)
+  if (actors === undefined) {
+    return '暂无主演'
+  }
+  return actors.map((item) => item.name).join(' ')
+})
 export default {
   data () {
     return {
@@ -19,10 +30,9 @@ export default {
     }
   },
   mounted () {
-    axios({
-      url: 'https://m.maizuo.com/gateway?cityId=110100&pageNum=1&pageSize=10&type=1&k=319388',
+    http({
+      url: '/gateway?cityId=110100&pageNum=1&pageSize=10&type=1&k=319388',
       headers: {
-        'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"1607073455926793812934657","bc":"110100"}',
         'X-Host': 'mall.film-ticket.film.list'
       }
       // method: 'get'
@@ -58,6 +68,11 @@ li {
   img {
     float: left;
     width: 100px;
+  }
+  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

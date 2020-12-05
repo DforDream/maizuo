@@ -18,5 +18,9 @@ ul {
     color: red;
     border-bottom: 3px solid red;
   }
+  //   吸顶效果
+  position: sticky;
+  top: 0px;
+  background: white;
 }
 </style>

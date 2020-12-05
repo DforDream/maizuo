@@ -2,7 +2,9 @@
   <div>
     <tabbar></tabbar>
     <!-- 路由容器 -->
-    <router-view></router-view>
+    <section>
+      <router-view></router-view>
+    </section>
   </div>
 </template>
 
@@ -48,5 +50,8 @@ li {
 body,
 html {
   width: 100%;
+}
+section {
+  margin-bottom: 50px;
 }
 </style>
