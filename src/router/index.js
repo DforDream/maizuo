@@ -6,7 +6,8 @@ import Cinema from '../views/Cinema.vue'
 import Nowplaying from '../views/film/Nowplaying'
 import Comingsoon from '../views/film/Comingsoon'
 import Datail from '../views/Datail'
-// import Login from '../views/Login'
+import City from '../views/City'
+import Search from '../views/Search'
 
 Vue.use(VueRouter) // 注册模块 创建了全局组件 router-view
 
@@ -45,6 +46,14 @@ const routes = [{
 {
   path: '/login',
   component: () => import('../views/Login.vue')
+},
+{
+  path: '/city',
+  component: City
+},
+{
+  path: '/cinema/search',
+  component: Search
 },
 { // 重定向路由
   path: '*',

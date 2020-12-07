@@ -1,33 +1,60 @@
 <template>
-  <div class="cinema">
-    <ul>
-      <li v-for="data in cinemaList" :key="data.cinemaId">
-       <div>{{data.name}}</div>
-       <div class="address">{{data.address}}</div>
-      </li>
-    </ul>
+  <div>
+    <van-nav-bar
+      title="影院"
+      @click-left="onClickLeft"
+      @click-right="onClickRight"
+    >
+      <template #left>
+        {{$store.state.cityName}}
+        <van-icon
+          name="arrow-down"
+          size="12"
+        />
+      </template>
+      <template #right>
+        <van-icon
+          name="search"
+          size="24"
+          color="black"
+        />
+      </template>
+    </van-nav-bar>
+    <div class="cinema">
+      <van-list>
+        <van-cell
+          v-for="data in $store.state.cinemaList"
+          :key="data.cinemaId"
+        >
+          <div>{{data.name}}</div>
+          <div class="address">{{data.address}}</div>
+        </van-cell>
+      </van-list>
+    </div>
   </div>
 </template>
 
 <script>
-import http from '@/util/http'
 import BetterScroll from 'better-scroll'
+import Vue from 'vue'
+import { NavBar, Icon, Cell, List } from 'vant'
+Vue.use(NavBar).use(Icon).use(List).use(Cell)
 export default {
-  data () {
-    return {
-      cinemaList: []
-    }
-  },
   mounted () {
-    http({
-      url: '/gateway?cityId=310100&ticketFlag=1&k=8888416',
-      headers: {
-        'X-Host': 'mall.film-ticket.cinema.list'
-      }
-    }).then(res => {
-      // console.log(res.data)
-      this.cinemaList = res.data.data.cinemas
-      // 状态立即更改 ，但是dom异步渲染
+    if (this.$store.state.cinemaList.length === 0) {
+      // vuex 异步流程
+      this.$store.dispatch('getCinemaList', this.$store.state.cityId).then(res => {
+        // 状态立即更改 ，但是dom异步渲染
+        this.$nextTick(() => {
+          new BetterScroll('.cinema', {
+            scrollbar: {
+              fade: true
+            }
+          })
+        })
+      })
+    } else { // 读取vuex里的缓存
+      // console.log('缓存')
       this.$nextTick(() => {
         new BetterScroll('.cinema', {
           scrollbar: {
@@ -35,7 +62,17 @@ export default {
           }
         })
       })
-    })
+    }
+  },
+  methods: {
+    onClickLeft () {
+      // 清空cinemaList
+      this.$store.commit('clearCinemaList')
+      this.$router.push('/city')
+    },
+    onClickRight () {
+      this.$router.push('/cinema/search')
+    }
   }
 }
 </script>
@@ -49,7 +86,7 @@ li {
   }
 }
 .cinema {
-  height: calc(100vh - 50px);
+  height: calc(100vh - 96px);
   overflow: hidden;
   position: relative; // 修正滚动条的位置
 }
