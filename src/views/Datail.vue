@@ -74,6 +74,7 @@ import moment from 'moment'
 import datailSwiper from './datail/DatailSwiper'
 import datailHeader from './datail/DatailHeader'
 import { ImagePreview } from 'vant'
+import { mapMutations } from 'vuex'
 Vue.filter('dataFilter', (date) => {
   // 日期处理函数 - moment
   return moment(date * 1000).format('YYYY-MM-DD')
@@ -103,7 +104,8 @@ export default {
   },
   mounted () {
     // 隐藏navbar
-    this.$store.commit('hideTabbar')
+    // this.$store.commit('hideTabbar')
+    this.hideTabbar()
 
     // this.$route 当前匹配路由对象信息
     // console.log('获取id', this.$route.params.myid)
@@ -124,13 +126,15 @@ export default {
     })
   },
   beforeDestroy () {
-    this.$store.commit('showTabbar')
+    // this.$store.commit('showTabbar')
+    this.showTabbar()
   },
   components: {
     datailSwiper,
     datailHeader
   },
   methods: {
+    ...mapMutations('TabbarModule', ['showTabbar', 'hideTabbar']),
     handlePerview (index) {
       ImagePreview({
         images: this.filminfo.photos,

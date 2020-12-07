@@ -6,7 +6,7 @@
       @click-right="onClickRight"
     >
       <template #left>
-        {{$store.state.cityName}}
+        {{cityName}}
         <van-icon
           name="arrow-down"
           size="12"
@@ -23,7 +23,7 @@
     <div class="cinema">
       <van-list>
         <van-cell
-          v-for="data in $store.state.cinemaList"
+          v-for="data in cinemaList"
           :key="data.cinemaId"
         >
           <div>{{data.name}}</div>
@@ -38,12 +38,13 @@
 import BetterScroll from 'better-scroll'
 import Vue from 'vue'
 import { NavBar, Icon, Cell, List } from 'vant'
+import { mapActions, mapMutations, mapState } from 'vuex'
 Vue.use(NavBar).use(Icon).use(List).use(Cell)
 export default {
   mounted () {
-    if (this.$store.state.cinemaList.length === 0) {
+    if (this.cinemaList.length === 0) {
       // vuex 异步流程
-      this.$store.dispatch('getCinemaList', this.$store.state.cityId).then(res => {
+      this.getCinemaList(this.cityId).then(res => {
         // 状态立即更改 ，但是dom异步渲染
         this.$nextTick(() => {
           new BetterScroll('.cinema', {
@@ -65,14 +66,20 @@ export default {
     }
   },
   methods: {
+    ...mapActions('CinemaModule', ['getCinemaList']),
+    ...mapMutations('CinemaModule', ['clearCinemaList']),
     onClickLeft () {
       // 清空cinemaList
-      this.$store.commit('clearCinemaList')
+      this.clearCinemaList()
       this.$router.push('/city')
     },
     onClickRight () {
       this.$router.push('/cinema/search')
     }
+  },
+  computed: {
+    ...mapState('CinemaModule', ['cinemaList']),
+    ...mapState('CityModule', ['cityId', 'cityName'])
   }
 }
 </script>

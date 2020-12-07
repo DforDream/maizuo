@@ -32,6 +32,7 @@
 import http from '@/util/http' // @ 指向src的据对路径
 import Vue from 'vue'
 import { List, Cell } from 'vant'
+import { mapState } from 'vuex'
 Vue.use(List).use(Cell)
 Vue.filter('actorFilter', (actors) => {
   // console.log(actors)
@@ -52,7 +53,7 @@ export default {
   },
   mounted () {
     http({
-      url: `/gateway?cityId=${this.$store.state.cityId}&pageNum=1&pageSize=10&type=1&k=319388`,
+      url: `/gateway?cityId=${this.cityId}&pageNum=1&pageSize=10&type=1&k=319388`,
       headers: {
         'X-Host': 'mall.film-ticket.film.list'
       }
@@ -62,6 +63,9 @@ export default {
       this.datalist = res.data.data.films
       this.total = res.data.data.total
     })
+  },
+  computed: {
+    ...mapState('CityModule', ['cityId'])
   },
   methods: {
     onLoad () {

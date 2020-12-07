@@ -24,6 +24,7 @@
 import Vue from 'vue'
 import { IndexBar, IndexAnchor, Toast } from 'vant'
 import http from '@/util/http'
+import { mapMutations } from 'vuex'
 
 Vue.use(IndexBar)
 Vue.use(IndexAnchor)
@@ -45,6 +46,7 @@ export default {
     })
   },
   methods: {
+    ...mapMutations('CityModule', ['changeCityName', 'changeCityId']),
     handleCityData (cities) {
       //   console.log(cities)
       // 输入原始数据，输出 目标数据
@@ -75,12 +77,15 @@ export default {
       Toast(index)
     },
     handleChangePage (name, cityId) {
-      this.$store.commit('changeCityName', name)
-      this.$store.commit('changeCityId', cityId)
+      // this.$store.commit('changeCityName', name)
+      // this.$store.commit('changeCityId', cityId)
+      this.changeCityName(name)
+      this.changeCityId(cityId)
       this.$router.back()
     }
   },
   computed: {
+
     computedCities () {
       return this.cityList.map(item => item.type)
     }
