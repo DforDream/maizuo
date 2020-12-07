@@ -30,7 +30,7 @@
       <h3>剧照</h3>
       <datail-swiper :perslide="2" swiperclass="swiper-photos">
         <div class="swiper-slide" v-for="(data,index) in filminfo.photos" :key="index">
-          <div :style="{backgroundImage:'url('+ data +')'}" style="height:100px;background-position:center;background-size:cover;"></div>
+          <div :style="{backgroundImage:'url('+ data +')'}" style="height:100px;background-position:center;background-size:cover;" @click="handlePerview(index)"></div>
         </div>
       </datail-swiper>
     </div>
@@ -42,6 +42,7 @@ import Vue from 'vue'
 import moment from 'moment'
 import datailSwiper from './datail/DatailSwiper'
 import datailHeader from './datail/DatailHeader'
+import { ImagePreview, Toast } from 'vant'
 Vue.filter('dataFilter', (date) => {
   // 日期处理函数 - moment
   return moment(date * 1000).format('YYYY-MM-DD')
@@ -86,11 +87,29 @@ export default {
     }).then(res => {
       // console.log(res.data.data.film)
       this.filminfo = res.data.data.film
+      Toast.clear()
+    })
+    Toast.loading({
+      message: '加载中...',
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
     })
   },
   components: {
     datailSwiper,
     datailHeader
+  },
+  methods: {
+    handlePerview (index) {
+      ImagePreview({
+        images: this.filminfo.photos,
+        startPosition: index,
+        closeable: true,
+        loop: false,
+        closeIconPosition: 'top-left'
+      })
+    }
   }
 }
 </script>
