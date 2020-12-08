@@ -58,4 +58,7 @@ html {
 section {
   margin-bottom: 50px;
 }
+* {
+  touch-action: manipulation;
+}
 </style>

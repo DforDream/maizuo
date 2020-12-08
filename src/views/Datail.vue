@@ -1,70 +1,72 @@
 <template>
-  <div v-if="filminfo">
-    <datail-header
-      v-top
-      :title="filminfo.name"
-    ></datail-header>
-    <div
-      :style="{backgroundImage:'url('+ filminfo.poster +')'}"
-      style="height:200px;background-position:center;background-size:cover;"
-    ></div>
-    <h3>{{filminfo.name}}--{{filminfo.filmType.name}}</h3>
-    <div>
-      {{filminfo.category}}
-    </div>
-    <div>
-      {{filminfo.premiereAt | dataFilter}}上映
-    </div>
-    <div>
-      {{filminfo.nation}}|{{filminfo.runtime}}分钟
-    </div>
-    <div :class="isShow ? '' : 'synopsis'">
-      {{filminfo.synopsis}}
-    </div>
-    <div style="text-align:center"><i
-        class="iconfont"
-        :class="isShow ? 'icon-less' : 'icon-moreunfold'"
-        @click="isShow = !isShow"
-      ></i></div>
-
-    <h3>演职人员</h3>
-    <datail-swiper
-      :perslide="4"
-      swiperclass="swiper-actors"
-    >
+  <v-touch @swiperight="onSwipeRight">
+    <div v-if="filminfo">
+      <datail-header
+        v-top
+        :title="filminfo.name"
+      ></datail-header>
       <div
-        class="swiper-slide"
-        v-for="(data,index) in filminfo.actors"
-        :key="index"
-      >
-        <img
-          :src="data.avatarAddress"
-          alt=""
-        >
-        <div style="text-align:center;">
-          <div>{{data.name}}</div>
-          <div>{{data.role}}</div>
-        </div>
+        :style="{backgroundImage:'url('+ filminfo.poster +')'}"
+        style="height:200px;background-position:center;background-size:cover;"
+      ></div>
+      <h3>{{filminfo.name}}--{{filminfo.filmType.name}}</h3>
+      <div>
+        {{filminfo.category}}
       </div>
-    </datail-swiper>
-    <h3>剧照</h3>
-    <datail-swiper
-      :perslide="2"
-      swiperclass="swiper-photos"
-    >
-      <div
-        class="swiper-slide"
-        v-for="(data,index) in filminfo.photos"
-        :key="index"
+      <div>
+        {{filminfo.premiereAt | dataFilter}}上映
+      </div>
+      <div>
+        {{filminfo.nation}}|{{filminfo.runtime}}分钟
+      </div>
+      <div :class="isShow ? '' : 'synopsis'">
+        {{filminfo.synopsis}}
+      </div>
+      <div style="text-align:center"><i
+          class="iconfont"
+          :class="isShow ? 'icon-less' : 'icon-moreunfold'"
+          @click="isShow = !isShow"
+        ></i></div>
+
+      <h3>演职人员</h3>
+      <datail-swiper
+        :perslide="4"
+        swiperclass="swiper-actors"
       >
         <div
-          :style="{backgroundImage:'url('+ data +')'}"
-          style="height:100px;background-position:center;background-size:cover;"
-          @click="handlePerview(index)"
-        ></div>
-      </div>
-    </datail-swiper>
-  </div>
+          class="swiper-slide"
+          v-for="(data,index) in filminfo.actors"
+          :key="index"
+        >
+          <img
+            :src="data.avatarAddress"
+            alt=""
+          >
+          <div style="text-align:center;">
+            <div>{{data.name}}</div>
+            <div>{{data.role}}</div>
+          </div>
+        </div>
+      </datail-swiper>
+      <h3>剧照</h3>
+      <datail-swiper
+        :perslide="2"
+        swiperclass="swiper-photos"
+      >
+        <div
+          class="swiper-slide"
+          v-for="(data,index) in filminfo.photos"
+          :key="index"
+        >
+          <div
+            :style="{backgroundImage:'url('+ data +')'}"
+            style="height:100px;background-position:center;background-size:cover;"
+            @click="handlePerview(index)"
+          ></div>
+        </div>
+      </datail-swiper>
+    </div>
+  </v-touch>
 </template>
 
 <script>
@@ -75,6 +77,8 @@ import datailSwiper from './datail/DatailSwiper'
 import datailHeader from './datail/DatailHeader'
 import { ImagePreview } from 'vant'
 import { mapMutations } from 'vuex'
+var VueTouch = require('vue-touch')
+Vue.use(VueTouch)
 Vue.filter('dataFilter', (date) => {
   // 日期处理函数 - moment
   return moment(date * 1000).format('YYYY-MM-DD')
@@ -143,6 +147,10 @@ export default {
         loop: false,
         closeIconPosition: 'top-left'
       })
+    },
+    onSwipeRight () {
+      // console.log('right')
+      this.$router.back()
     }
   }
 }
